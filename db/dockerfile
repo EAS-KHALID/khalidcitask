@@ -1,0 +1,4 @@
+FROM mysql:latest
+ENV MYSQL_ROOT_PASSWORD=slide
+COPY app.sql /docker-entrypoint-initdb.d/ 
+EXPOSE 330

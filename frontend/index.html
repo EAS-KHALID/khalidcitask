@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WHAT TO DO TODAY?</title>
+    <h1>What To Do Today?</h1>
+
+    <button onclick="postTask('andrew','kaine')">create task</button>
+    <button onclick="putTasks('lewis','elif','7')">update task</button>
+    <button onclick="deleteTask('6')">delete task</button>
+    <button onclick="getTasks()">get task</button>
+
+<div id="tasks">
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        function getTasks() {
+
+            fetch("/api/tasks")
+                .then(response => response.json())
+                .then(result => {
+
+let taskContainer=document.getElementById("tasks")
+
+                    for(let task = 0; task < result.length;task++){
+                            // console.log(result[task].name)
+                            // console.log(result[task].description)
+                            // console.log(result[task].id)
+// let taskNameLabel = document.createElement("div")
+// taskNameLabel.innerText =
+// taskContainer.appendChild(taskNameLabel)
+
+let taskNameDisplay = document.createElement("div")
+taskNameDisplay.innerText = `Name: ${result[task].name}`
+taskContainer.appendChild(taskNameDisplay)
+
+
+
+
+
+// let taskDescriptionLabel = document.createElement("div")
+// taskDescriptionLabel.innerText = "Description: "
+// taskContainer.appendChild(taskDescriptionLabel)
+
+let taskDescriptionDisplay = document.createElement("div")
+taskDescriptionDisplay.innerText = `Description: ${result[task].description}`
+taskContainer.appendChild(taskDescriptionDisplay)
+
+taskContainer.appendChild(document.createElement("br"))
+
+                    }
+
+                })
+                .catch(error => console.log('error', error));
+
+        }
+
+
+        function postTask(taskName, taskDescription) {
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+
+            var raw = JSON.stringify({
+                "name": taskName,
+                "description": taskDescription
+            });
+
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+
+            fetch("/api/tasks", requestOptions)
+                .then(response => response.text())
+                .then(result => console.log(result))
+                .catch(error => console.log('error', error));
+        }
+
+
+
+
+
+        function putTasks(taskName, taskDescription, taskId) {
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+
+            var raw = JSON.stringify({
+                "name": taskName,
+                "description": taskDescription
+            });
+
+            var requestOptions = {
+                method: 'PUT',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+
+            fetch(`/api/tasks/${taskId}`, requestOptions)
+                .then(response => response.text())
+                .then(result => console.log(result))
+                .catch(error => console.log('error', error));
+
+        }
+
+
+        function deleteTask(taskId) {
+
+            var requestOptions = {
+                method: 'DELETE',
+                redirect: 'follow'
+            };
+
+            fetch(`/api/tasks/${taskId}`, requestOptions)
+                .then(response => response.text())
+                .then(result => console.log(result))
+                .catch(error => console.log('error', error));
+
+        }
+    </script>

@@ -1,0 +1,37 @@
+version: "3.5"
+services:
+  api:
+    
+    build: ./frontend
+    ports:
+    - "8000:80"
+  
+  backend:
+    restart: always
+    
+    build: ./backend
+    ports:
+       - "3000:3000" 
+ 
+  db:
+    
+    build: ./db
+    environment:
+      MYSQL_ROOT_PASSWORD: slide
+      MYSQL_DATABASE: todo-task1
+    # volumes:
+    #   - db_data:/var/lib/mysql
+      # - ./app.sql:/docker-entrypoint-initdb.d/app.sql
+    ports:
+      - "3306:3306"
+  # adminer:
+    # image: adminer
+   # ports:
+    #  - "8080:8080"
+volumes:
+  db_data:
+
+
+
+
+
