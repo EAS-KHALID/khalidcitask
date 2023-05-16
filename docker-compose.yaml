@@ -8,6 +8,14 @@ services:
   
   backend:
     restart: always
+    environment:
+      PORT: 3000
+      host: db
+      user: root
+      database: todo-task1
+      password: slide
+
+
     
     build: ./backend
     ports:
