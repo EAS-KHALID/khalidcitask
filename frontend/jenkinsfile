@@ -1,1 +1,53 @@
+pipeline {
+  agent any
 
+  environment {
+    registryCredential = 'dockerhub'
+  }
+
+  stages {
+    stage('gitclone') {
+      steps {
+        git 'https://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@github.com/EAS-KHALID/frotnend.git"
+      }
+    }
+    
+    
+    stage('SonarScanner') {
+      steps {
+        withSonarQubeEnv('khalidsonar') {
+          sh 'echo $SONAR_HOST_URL'
+        }
+      }
+     }
+    
+    
+
+   
+    stage('Build') {
+      steps {
+        sh 'docker build -t khalideas/frontendpipeline .'
+      }
+    }
+
+    stage('Login') {
+      steps {
+        withCredentials([
+          usernamePassword(
+            credentialsId: 'dockerhub',
+            usernameVariable: 'DOCKER_USER',
+            passwordVariable: 'DOCKER_PASSWORD'
+          )
+        ]) {
+          sh "docker login -u $DOCKER_USER -p $DOCKER_PASSWORD"
+        }
+      }
+    }
+
+    stage('Push') {
+      steps {
+        sh 'docker push khalideas/frontendpipeline'
+      }
+    }
+  }
+}
