@@ -1,5 +1,0 @@
-FROM mysql:latest
-ENV MYSQL_ROOT_PASSWORD=slide
-ENV MYSQL_DATABASE=todo-task1
-COPY app.sql /docker-entrypoint-initdb.d/ 
-EXPOSE 3306
