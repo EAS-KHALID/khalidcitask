@@ -2,13 +2,13 @@ pipeline {
   agent any
 
   environment {
-    registryCredential = 'dockerhub'
+    registryCredential = ‘nexusrm’
   }
 
   stages {
     stage('gitclone') {
       steps {
-        git 'https://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@github.com/EAS-KHALID/frotnend.git"
+        git 'https://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@github.com/EAS-KHALID/khalidcitask.git"
       }
     }
     
@@ -26,7 +26,7 @@ pipeline {
    
     stage('Build') {
       steps {
-        sh 'docker build -t khalideas/frontendpipeline .'
+        sh 'docker build -t khalidrepo/khalid-repo .'
       }
     }
 
@@ -35,19 +35,35 @@ pipeline {
         withCredentials([
           usernamePassword(
             credentialsId: 'dockerhub',
-            usernameVariable: 'DOCKER_USER',
-            passwordVariable: 'DOCKER_PASSWORD'
+            usernameVariable: ‘NEXUS_USER',
+            passwordVariable: ’NEXUS_PASSWORD'
           )
         ]) {
-          sh "docker login -u $DOCKER_USER -p $DOCKER_PASSWORD"
+          sh "docker login -u $NEXUS_USER -p $NEXUS_PASSWORD"
         }
       }
     }
 
-    stage('Push') {
-      steps {
-        sh 'docker push khalideas/frontendpipeline'
-      }
-    }
+stage('TrivyScan') {
+  steps {
+    sh 'trivy image khalideas/frontendpipeline'
   }
+}
+stage("upload artifact")
+  steps {
+   nexusArtifactUploader(
+        nexusVersion: 'nexus-3.57.0-01',
+        protocol: 'http',
+        nexusUrl: 'my.nexus.address',
+        groupId: 'com.example',
+        version: version,
+        repository: 'khalid-repo',
+        credentialsId: 'nexusrm',
+        artifacts: [
+            [artifactId: projectName,
+             classifier: '',
+             file: 'my-service-' + version + '.jar',
+             type: 'jar']
+        ]
+     )
 }
