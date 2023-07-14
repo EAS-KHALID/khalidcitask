@@ -26,13 +26,13 @@ pipeline {
    
     stage('Build') {
       steps {
-        sh 'docker build -t khalidrepo/khalid-repo .'
+        sh 'docker build -t "$NEXUSTAG"/khalid-repo .'
       }
     }
 
     stage('TrivyScan') {
   steps {
-    sh 'trivy image khalideas/frontendpipeline'
+    sh 'trivy image "$NEXUSTAG"/khalid-repo'
   }
 }
 
@@ -53,19 +53,9 @@ pipeline {
 
 stage("upload artifact")
   steps {
-   nexusArtifactUploader(
-        nexusVersion: 'nexus-3.57.0-01',
-        protocol: 'http',
-        nexusUrl: 'my.nexus.address',
-        groupId: 'com.example',
-        version: version,
-        repository: 'khalid-repo',
-        credentialsId: 'nexusrm',
-        artifacts: [
-            [artifactId: projectName,
-             classifier: '',
-             file: 'my-service-' + version + '.jar',
-             type: 'jar']
-        ]
-     )
+     sh 'docker push "$NEXUSTAG"/khalid-repo'
+                }
+            }
+        }
 }
+  
