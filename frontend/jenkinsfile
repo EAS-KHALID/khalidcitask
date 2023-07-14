@@ -8,7 +8,7 @@ pipeline {
   stages {
     stage('gitclone') {
       steps {
-        git 'https://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@github.com/EAS-KHALID/khalidcitask.git'
+        git 'https://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@github.com/EAS-KHALID/khalidcitask/frontend.git'
       }
     }
     
